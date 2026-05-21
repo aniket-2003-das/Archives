@@ -3,7 +3,7 @@
 > A multi-node AI agent system for social media intelligence, content creation, and competitive strategy. Input an Instagram or YouTube profile and get full analytics and competitor insights. [LLM powered]
 
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [System Overview](#system-overview)
 - [Architecture Diagram](#architecture-diagram)
@@ -111,9 +111,9 @@ User Input (handle / URL)
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `platform` | `string` | ✅ | `"instagram"` or `"youtube"` |
-| `handle` | `string` | ✅ | Username or full profile URL |
-| `date_range_days` | `number` | ❌ | Default `30` |
+| `platform` | `string` | Yes | `"instagram"` or `"youtube"` |
+| `handle` | `string` | Yes | Username or full profile URL |
+| `date_range_days` | `number` | No | Default `30` |
 
 **Outputs:**
 
@@ -165,8 +165,8 @@ User Input (handle / URL)
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `video_url` | `string` | ✅ | Instagram .mp4 URL or YouTube video URL |
-| `language_hint` | `string` | ❌ | ISO 639-1 code e.g. `"hi"`, `"en"` |
+| `video_url` | `string` | Yes | Instagram .mp4 URL or YouTube video URL |
+| `language_hint` | `string` | No | ISO 639-1 code e.g. `"hi"`, `"en"` |
 
 **Outputs:**
 
@@ -209,12 +209,12 @@ YouTube URL   → yt-dlp (Azure Container Instance) → Azure Blob Storage
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `topic` | `string` | ✅ | e.g. `"3 morning habits that doubled my productivity"` |
-| `hook_style` | `string` | ✅ | `"question"` / `"shock"` / `"story"` / `"bold_claim"` |
-| `tone` | `string` | ✅ | `"educational"` / `"funny"` / `"motivational"` / `"conversational"` |
-| `language` | `string` | ✅ | ISO 639-1 code |
-| `duration_seconds` | `number` | ❌ | Target video length. Default `60` |
-| `source_transcript` | `string` | ❌ | Existing transcript for style-matching |
+| `topic` | `string` | Yes | e.g. `"3 morning habits that doubled my productivity"` |
+| `hook_style` | `string` | Yes | `"question"` / `"shock"` / `"story"` / `"bold_claim"` |
+| `tone` | `string` | Yes | `"educational"` / `"funny"` / `"motivational"` / `"conversational"` |
+| `language` | `string` | Yes | ISO 639-1 code |
+| `duration_seconds` | `number` | No | Target video length. Default `60` |
+| `source_transcript` | `string` | No | Existing transcript for style-matching |
 
 **Outputs:**
 
@@ -255,10 +255,10 @@ Output valid JSON only. No markdown fences.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `text` | `string` or `string[]` | ✅ | Content to translate |
-| `source_language` | `string` | ❌ | Auto-detected if omitted |
-| `target_language` | `string` | ✅ | ISO 639-1 code |
-| `content_type` | `string` | ✅ | `"script"` / `"caption"` / `"hashtags"` / `"transcript"` |
+| `text` | `string` or `string[]` | Yes | Content to translate |
+| `source_language` | `string` | No | Auto-detected if omitted |
+| `target_language` | `string` | Yes | ISO 639-1 code |
+| `content_type` | `string` | Yes | `"script"` / `"caption"` / `"hashtags"` / `"transcript"` |
 
 **Outputs:**
 
@@ -282,11 +282,11 @@ Output valid JSON only. No markdown fences.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `script` | `string` | ✅ | Video script or topic description |
-| `platform` | `string` | ✅ | `"instagram"` / `"youtube"` |
-| `cta_type` | `string` | ✅ | `"follow"` / `"link_in_bio"` / `"comment"` / `"save"` |
-| `language` | `string` | ✅ | ISO 639-1 code |
-| `niche` | `string` | ✅ | e.g. `"fitness"`, `"personal_finance"`, `"tech"` |
+| `script` | `string` | Yes | Video script or topic description |
+| `platform` | `string` | Yes | `"instagram"` / `"youtube"` |
+| `cta_type` | `string` | Yes | `"follow"` / `"link_in_bio"` / `"comment"` / `"save"` |
+| `language` | `string` | Yes | ISO 639-1 code |
+| `niche` | `string` | Yes | e.g. `"fitness"`, `"personal_finance"`, `"tech"` |
 
 **Platform character limits enforced:**
 
@@ -299,7 +299,7 @@ Output valid JSON only. No markdown fences.
 
 ```json
 {
-  "caption": "Your morning routine is costing you 2 hours of peak focus every day. Here's the fix 👇\n\n...",
+  "caption": "Your morning routine is costing you 2 hours of peak focus every day. Here's the fix \n\n...",
   "seo_keywords": ["morning routine", "productivity habits", "focus tips"],
   "cta": "Save this for tomorrow morning ↓",
   "character_count": 847,
@@ -319,10 +319,10 @@ Output valid JSON only. No markdown fences.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `niche` | `string` | ✅ | e.g. `"fitness"`, `"crypto"`, `"ai tools"` |
-| `platform` | `string` | ❌ | Filters relevance by platform audience |
-| `region` | `string` | ❌ | ISO 3166-1 alpha-2, e.g. `"IN"`, `"US"` |
-| `time_window` | `string` | ❌ | `"24h"` / `"7d"` / `"30d"` |
+| `niche` | `string` | Yes | e.g. `"fitness"`, `"crypto"`, `"ai tools"` |
+| `platform` | `string` | No | Filters relevance by platform audience |
+| `region` | `string` | No | ISO 3166-1 alpha-2, e.g. `"IN"`, `"US"` |
+| `time_window` | `string` | No | `"24h"` / `"7d"` / `"30d"` |
 
 **Outputs:**
 
@@ -356,8 +356,8 @@ Output valid JSON only. No markdown fences.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `niche` | `string` | ✅ | e.g. `"personal_finance"` |
-| `platform` | `string` | ✅ | `"instagram"` / `"youtube"` |
+| `niche` | `string` | Yes | e.g. `"personal_finance"` |
+| `platform` | `string` | Yes | `"instagram"` / `"youtube"` |
 
 
 **Hashtag strategy (30-tag output):**
@@ -394,10 +394,10 @@ Output valid JSON only. No markdown fences.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `competitor_handles` | `string[]` | ✅ | handles (Instagram or YouTube) |
-| `your_handle` | `string` | ❌ | Include yourself for relative comparison |
-| `platform` | `string` | ✅ | `"instagram"` or `"youtube"` |
-| `depth` | `string` | ❌ | `"quick"` (last 10 posts) / `"deep"` (last 30 days) |
+| `competitor_handles` | `string[]` | Yes | handles (Instagram or YouTube) |
+| `your_handle` | `string` | No | Include yourself for relative comparison |
+| `platform` | `string` | Yes | `"instagram"` or `"youtube"` |
+| `depth` | `string` | No | `"quick"` (last 10 posts) / `"deep"` (last 30 days) |
 
 **Outputs:**
 
@@ -476,16 +476,16 @@ Step 7 → Fan-in + delivery
 
 | Data point | Available | Notes |
 |---|---|---|
-| Views | ✅ | Both platforms |
-| Likes | ✅ | Both platforms |
-| Comments | ✅ | Both platforms |
-| Thumbnails | ✅ | Both platforms |
-| Music / audio info | ✅ | Instagram only |
-| Direct .mp4 URL | ✅ | Instagram only |
-| Publish date | ✅ | Both platforms |
-| Shares | ❌ | Never available — no service can provide this |
-| Saves | ❌ | Never available — no service can provide this |
-| Direct YouTube .mp4 URL | ❌ | Requires yt-dlp server-side |
+| Views | Yes | Both platforms |
+| Likes | Yes | Both platforms |
+| Comments | Yes | Both platforms |
+| Thumbnails | Yes | Both platforms |
+| Music / audio info | Yes | Instagram only |
+| Direct .mp4 URL | Yes | Instagram only |
+| Publish date | Yes | Both platforms |
+| Shares | No | Never available — no service can provide this |
+| Saves | No | Never available — no service can provide this |
+| Direct YouTube .mp4 URL | No | Requires yt-dlp server-side |
 
 ---
 
