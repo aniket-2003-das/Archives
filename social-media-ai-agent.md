@@ -248,9 +248,6 @@ Structure: Hook (3–5s) → Body (value delivery) → CTA (5s)
 Output valid JSON only. No markdown fences.
 ```
 
-**Azure services:** Azure OpenAI GPT-4o, Azure Functions  
-**Model:** `gpt-4o` with structured JSON output mode
-
 ---
 
 ### Node 4 — Translation
@@ -278,9 +275,6 @@ Output valid JSON only. No markdown fences.
 }
 ```
 
-**Azure services:** Azure OpenAI GPT-4o-mini, Azure Functions  
-**Model:** `gpt-4o-mini` (sufficient quality, ~70% cheaper than GPT-4o)
-
 ---
 
 ### Node 5 — SEO Caption Generator
@@ -292,7 +286,7 @@ Output valid JSON only. No markdown fences.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `script` | `string` | ✅ | Video script or topic description |
-| `platform` | `string` | ✅ | `"instagram"` / `"youtube"` / `"tiktok"` |
+| `platform` | `string` | ✅ | `"instagram"` / `"youtube"` |
 | `cta_type` | `string` | ✅ | `"follow"` / `"link_in_bio"` / `"comment"` / `"save"` |
 | `language` | `string` | ✅ | ISO 639-1 code |
 | `niche` | `string` | ✅ | e.g. `"fitness"`, `"personal_finance"`, `"tech"` |
@@ -303,7 +297,6 @@ Output valid JSON only. No markdown fences.
 |---|---|---|
 | Instagram | 2,200 chars | End of caption or first comment |
 | YouTube | 5,000 chars | Description body + timestamp links |
-| TikTok | 2,200 chars | Inline within caption |
 
 **Outputs:**
 
@@ -318,13 +311,12 @@ Output valid JSON only. No markdown fences.
 }
 ```
 
-**Azure services:** Azure OpenAI GPT-4o, Azure AI Search (keyword index), Azure Functions
 
 ---
 
 ### Node 6 — Hot Topics
 
-**Purpose:** Surface real-time trending topics in a niche with content angle suggestions. Fully clickable — select a topic to get full context and subtopics.
+**Purpose:** Surface real-time trending topics in a niche with content angle suggestions. 
 
 **Inputs:**
 
@@ -357,11 +349,9 @@ Output valid JSON only. No markdown fences.
 }
 ```
 
-**Azure services:** Bing Search API v7, Azure AI Search, Azure OpenAI GPT-4o, Redis (TTL: 1h)
-
 ---
 
-### Node 7 — Trending Hashtags
+### Node 7 — Trending Hashtags in niche
 
 **Purpose:** Generate a stratified set of hashtags (mega / mid / micro) for maximum reach and discoverability.
 
@@ -370,9 +360,8 @@ Output valid JSON only. No markdown fences.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `niche` | `string` | ✅ | e.g. `"personal_finance"` |
-| `platform` | `string` | ✅ | `"instagram"` / `"tiktok"` / `"youtube"` |
-| `topic` | `string` | ✅ | Specific video topic |
-| `region` | `string` | ❌ | For region-specific hashtags |
+| `platform` | `string` | ✅ | `"instagram"` / `"youtube"` |
+
 
 **Hashtag strategy (30-tag output):**
 
@@ -404,13 +393,13 @@ Output valid JSON only. No markdown fences.
 
 ### Node 8 — Competitor Analysis
 
-**Purpose:** Analyze 2–5 competitor profiles side-by-side and generate strategic recommendations.
+**Purpose:** Analyze competitor profiles side-by-side and generate strategic recommendations.
 
 **Inputs:**
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `competitor_handles` | `string[]` | ✅ | 2–5 handles (Instagram or YouTube) |
+| `competitor_handles` | `string[]` | ✅ | handles (Instagram or YouTube) |
 | `your_handle` | `string` | ❌ | Include yourself for relative comparison |
 | `platform` | `string` | ✅ | `"instagram"` or `"youtube"` |
 | `depth` | `string` | ❌ | `"quick"` (last 10 posts) / `"deep"` (last 30 days) |
@@ -445,8 +434,6 @@ Output valid JSON only. No markdown fences.
 }
 ```
 
-**Azure services:** Apify scrapers (parallel fan-out), Azure Durable Functions, Azure OpenAI GPT-4o, Cosmos DB  
-**Cost:** Apify credits × number of competitors × depth
 
 ---
 
@@ -475,7 +462,7 @@ Step 4 → Audio extraction
          .mp4 retained 24h then purged
 
 Step 5 → Transcription
-         OpenAI Whisper API (whisper-1)
+         OpenAI Whisper API (whisper)
          .mp3 → timestamped transcript JSON
          Cached in Redis by video ID hash (TTL: 7 days)
 
