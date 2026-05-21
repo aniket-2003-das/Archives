@@ -14,7 +14,7 @@
   - [Node 4 — Translation](#node-4--translation)
   - [Node 5 — SEO Caption Generator](#node-5--seo-caption-generator)
   - [Node 6 — Hot Topics](#node-6--hot-topics)
-  - [Node 7 — Trending Hashtags](#node-7--trending-hashtags)
+  - [Node 7 — Trending Hashtags](#node-7--trending-hashtags-in-niche)
   - [Node 8 — Competitor Analysis](#node-8--competitor-analysis)
 - [ProPeers Full Lookup Pipeline](#propeers-full-lookup-pipeline)
 - [Azure Infrastructure](#azure-infrastructure)
