@@ -251,7 +251,7 @@
   ├───────────────┼─────────┼─────────┼────────────────┤
   │ Route size    │ 94.5 kB │ 81.2 kB │ −13.3 kB       │
   ├───────────────┼─────────┼─────────┼────────────────┤
-  │ First Load JS │ 520 kB  │ 394 kB  │ −126 kB (−24%) │
+  │ First Load JS │ 526 kB  │ 394 kB  │ −126 kB (−24%) │
   └───────────────┴─────────┴─────────┴────────────────┘
 
   ▎ Additional gain from Step 8: moment removal (~67 kB gzipped) is not reflected in the numbers above — those were captured before Steps 8–9 were applied.
