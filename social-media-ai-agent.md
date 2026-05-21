@@ -504,10 +504,10 @@ Step 7 → Fan-in + delivery
 
 ### Monthly scale
 
-| Lookups/month | Apify cost | Whisper + GPT-4o | Apify subscription | **Total** |
-| 100 | $3.40  | $29 | **~$29** |
-| 500 | $17.00 | $29 | **~$29** |
-| 1,000 | $34.00 | $29 | **~$29** |
+Lookups/month, Apify cost, Whisper + GPT-4o, Apify subscription, Total
+100, $3.40, $29,
+500, $17.00, $29
+1,000, $34.00, $29
 
 > **Note:** Apify Starter ($29/mo) includes $35 in credits — covers ~1,000 full lookups before paying overage.
 
