@@ -1,9 +1,7 @@
-# 🤖 Social Media Strategic AI Agent
-### Built on Azure · Powered by OpenAI GPT-4o · Designed for ProPeers
+# Script Writer AI Agent
 
-> A multi-node AI agent system for social media intelligence, content creation, and competitive strategy. Input an Instagram or YouTube profile and get full analytics, transcriptions, scripts, captions, hashtags, and competitor insights — all powered by Azure OpenAI.
+> A multi-node AI agent system for social media intelligence, content creation, and competitive strategy. Input an Instagram or YouTube profile and get full analytics and competitor insights. [LLM powered]
 
----
 
 ## 📋 Table of Contents
 
@@ -34,25 +32,25 @@ User Input (handle / URL)
         │
         ▼
 ┌─────────────────────┐
-│  Azure API Management│  ← Auth, rate limiting, routing
+│ API Management Node │  ← Auth, rate limiting, routing
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  Durable Orchestrator│  ← Fan-out / fan-in across nodes
+│    Orchestrator     │  ← Fan-out / fan-in across nodes
 └──────────┬──────────┘
            │
     ┌──────┴───────┐
     │              │
     ▼              ▼
-[Apify]       [Bing Search]
-[yt-dlp]      [AI Search]
-[ffmpeg]      [OpenAI]
+[Apify]   [instagram-reel-scraper]
+[yt-dlp]       [AI Search]
+[yt]            [OpenAI]
     │              │
     └──────┬───────┘
            ▼
     ┌─────────────┐
-    │  Cosmos DB  │  ← Results stored 30 days
+    │  Mongo DB  │  ← Results stored +  Trending Results
     └─────────────┘
            │
            ▼
