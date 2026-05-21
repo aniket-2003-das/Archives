@@ -50,7 +50,7 @@ User Input (handle / URL)
     └──────┬───────┘
            ▼
     ┌─────────────┐
-    │  Mongo DB  │  ← Results stored +  Trending Results
+    │  Mongo DB   │  ← Results stored +  Trending Results
     └─────────────┘
            │
            ▼
@@ -62,16 +62,11 @@ User Input (handle / URL)
 | Layer | Technology |
 |---|---|
 | Orchestration | Azure Durable Functions (fan-out / fan-in) |
-| API Gateway | Azure API Management |
 | LLM | Azure OpenAI — GPT-4o + GPT-4o-mini + Whisper |
 | Scraping | Apify (`instagram-reel-scraper`, `youtube-scraper`) |
-| Media processing | yt-dlp + ffmpeg on Azure Container Instances |
-| Storage | Azure Blob Storage (media) + Cosmos DB (results) |
-| Cache | Azure Cache for Redis |
-| Discovery | Bing Search API v7 + Azure AI Search |
-| Secrets | Azure Key Vault |
-| Auth | Azure Active Directory B2C |
-| Observability | Azure Monitor + Application Insights |
+| Media processing | yt-dlp |
+| Storage | Azure Blob Storage (media)|
+| Discovery | Azure AI Search |
 
 ---
 
@@ -88,29 +83,23 @@ User Input (handle / URL)
                          │              ┌───────────────┼────────────┐  
                          │              │               │            │  
                          │              ▼               ▼            ▼  
-                         │     ┌──────────────┐  ┌──────────┐  ┌──────┐
-                         │     │Profile       │  │  Apify   │  │Bing  │
-                         │     │Analyzer Node │  │ Scraper  │  │Search│
-                         │     └──────┬───────┘  └────┬─────┘  └──┬───┘
+                         │     ┌──────────────┐  ┌──────────┐  ┌──────
+                         │     │Profile       │  │  Apify   │  │ Azure-AI 
+                         │     │Analyzer Node │  │ Scraper  │  │  Search
+                         │     └──────┬───────┘  └────┬─────┘  └──┬───
                          │            │               │           │    
                          │            ▼               ▼           │    
                          │     ┌──────────────┐  ┌──────────┐     │    
-                         │     │  yt-dlp ACI  │  │  Blob    │     │    
-                         │     │  ffmpeg ACI  │  │ Storage  │     │    
+                         │     │   yt-dlp     │  │  Blob &  │     │    
+                         │     │              │  │ Storage  │     │    
                          │     └──────┬───────┘  └────┬─────┘     │    
                          │            │               │           │   
                          │            ▼               ▼           ▼    
                          │     ┌──────────────────────────────────────┐ 
-                         │     │         Azure OpenAI Service         │ 
-                         │     │   GPT-4o · GPT-4o-mini · Whisper-1   │ 
+                         │     │         Azure LLM Service            │ 
+                         │     │   GPT-4o · GPT-4o-mini · Whisper     │ 
                          │     └──────────────────┬───────────────────┘ 
-                         │                        │                     
-                         │            ┌───────────┼──────────┐         
-                         │            ▼           ▼          ▼         
-                         │     ┌──────────┐  ┌────────┐  ┌───────┐    
-                         │     │Cosmos DB │  │ Redis  │  │AI Srch│    
-                         │     └──────────┘  └────────┘  └───────┘    
-                         └──────────────────────────────────────────────┘
+                         └──────────────────────────────────────────────
 ```
 
 ---
@@ -166,9 +155,8 @@ User Input (handle / URL)
 }
 ```
 
-**Azure services:** Apify actors (parallel) → Azure Durable Functions → Cosmos DB cache  
+**Azure services:** Apify actors (parallel) → Azure Durable Functions
 **LLM:** GPT-4o for activity summary narrative only  
-**Cache TTL:** 24 hours per handle in Redis
 
 ---
 
@@ -205,22 +193,14 @@ User Input (handle / URL)
 Instagram URL → direct .mp4 download → Azure Blob Storage
 YouTube URL   → yt-dlp (Azure Container Instance) → Azure Blob Storage
                       ↓
-             ffmpeg (Azure Container Instance)
-                  .mp4 → .mp3
-                      ↓
              OpenAI Whisper API (whisper-1)
                   .mp3 → transcript JSON
-                      ↓
-             Redis cache (key: video_id, TTL: 7 days)
+                      
 ```
 
 > **Note:** Instagram reels return a direct `.mp4` URL via Apify — no yt-dlp needed.  
 > YouTube does **not** return a direct `.mp4` — yt-dlp is required server-side.  
 > Shares and saves are **never** available on any platform — no service can provide them.
-
-**Azure services:** Azure Container Instances (yt-dlp + ffmpeg), Azure Blob Storage, OpenAI Whisper, Redis  
-**Cost:** ~$0.006 per video minute  
-**Cache TTL:** 7 days by video ID hash
 
 ---
 
