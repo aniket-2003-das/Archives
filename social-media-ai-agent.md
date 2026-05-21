@@ -19,9 +19,6 @@
 - [ProPeers Full Lookup Pipeline](#propeers-full-lookup-pipeline)
 - [Azure Infrastructure](#azure-infrastructure)
 - [Cost Model](#cost-model)
-- [API Contracts](#api-contracts)
-- [Environment Variables](#environment-variables)
-- [Deployment](#deployment)
 
 ---
 
@@ -490,9 +487,6 @@ Step 7 → Fan-in + delivery
 | Saves | ❌ | Never available — no service can provide this |
 | Direct YouTube .mp4 URL | ❌ | Requires yt-dlp server-side |
 
----
-
-## Azure Infrastructure
 ---
 
 ## Cost Model
