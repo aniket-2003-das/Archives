@@ -387,8 +387,6 @@ Output valid JSON only. No markdown fences.
 }
 ```
 
-**Azure services:** Bing Search API, Apify hashtag actor, Azure OpenAI GPT-4o-mini, Redis (TTL: 24h)
-
 ---
 
 ### Node 8 — Competitor Analysis
@@ -495,46 +493,6 @@ Step 7 → Fan-in + delivery
 ---
 
 ## Azure Infrastructure
-
-### Compute
-
-| Service | Usage |
-|---|---|
-| **Azure Container Apps** | Hosts each node as an independent microservice |
-| **Azure Durable Functions** | Orchestration, fan-out/fan-in, retry logic, state |
-| **Azure Container Instances** | Ephemeral yt-dlp and ffmpeg jobs (billed per second) |
-| **Azure API Management** | Single gateway — auth, rate limiting, routing, versioning |
-
-### AI / LLM
-
-| Service | Model | Used for |
-|---|---|---|
-| **Azure OpenAI** | GPT-4o | Script gen, competitor analysis, topic angles, captions |
-| **Azure OpenAI** | GPT-4o-mini | Translation, hashtags, summary text (70% cheaper) |
-| **Azure OpenAI** | Whisper-1 | Audio transcription |
-| **Azure AI Search** | — | Hot topics vector index, keyword search |
-| **Bing Search API v7** | — | Live trending data, topic research |
-
-> Your existing OpenAI API keys can be onboarded into Azure OpenAI Service. Traffic stays within your Azure tenant — no data leaves your VNet.
-
-### Storage & Data
-
-| Service | Usage | Retention |
-|---|---|---|
-| **Azure Blob Storage (hot)** | .mp4 and .mp3 temp files | 6–24h then auto-deleted |
-| **Azure Cosmos DB (NoSQL)** | Lookup results, profile snapshots | 30 days |
-| **Azure Cache for Redis** | Apify results (24h), transcripts (7d) | Per-key TTL |
-| **Azure CDN** | Media previews served to frontend | CDN edge cache |
-
-### Messaging & Ops
-
-| Service | Usage |
-|---|---|
-| **Azure Service Bus** | Async job queue for long-running media jobs |
-| **Azure Monitor + App Insights** | Telemetry, latency tracking, error alerts |
-| **Azure Key Vault** | Apify API key, OpenAI key, Bing key — never in code |
-| **Azure Active Directory B2C** | ProPeers user authentication |
-
 ---
 
 ## Cost Model
@@ -552,69 +510,17 @@ Step 7 → Fan-in + delivery
 
 ### Monthly scale
 
-| Lookups/month | Apify cost | Whisper + GPT-4o | Apify subscription | Azure infra | **Total** |
+| Lookups/month | Apify cost | Whisper + GPT-4o | Apify subscription | **Total** |
 |---|---|---|---|---|---|
-| 100 | $3.40 | $0.90 | $29 | ~$10 | **~$43** |
-| 500 | $17.00 | $4.50 | $29 | ~$15 | **~$66** |
-| 1,000 | $34.00 | $9.00 | $29 | ~$20 | **~$92** |
-| 5,000 | $170.00 | $45.00 | $199 | ~$40 | **~$454** |
-| 10,000 | $340.00 | $90.00 | $199 | ~$60 | **~$689** |
+| 100 | $3.40  | $29 | **~$29** |
+| 500 | $17.00 | $29 | **~$29** |
+| 1,000 | $34.00 | $29 | **~$29** |
 
 > **Note:** Apify Starter ($29/mo) includes $35 in credits — covers ~1,000 full lookups before paying overage.
 
-### Cost reduction strategies
 
-| Strategy | Saves |
-|---|---|
-| Redis cache Apify results (24h per handle) | $0.034/repeat lookup |
-| Redis cache transcripts (7d per video ID) | $0.006/repeat video |
-| Lazy transcription (on-demand, not upfront) | Up to 90% of Whisper cost |
-| GPT-4o-mini for translation, hashtags, captions | ~70% LLM cost reduction |
-| Blob TTL auto-delete .mp4/.mp3 after 6h | Significant storage savings |
-| Azure Reserved Instances for Container Apps | Up to 40% compute savings |
 
----
 
-## API Contracts
-
-All nodes expose REST endpoints behind Azure API Management.
-
-### Base URL
-```
-https://api.propeers.in/v1/agent
-```
-
-### Authentication
-```
-Authorization: Bearer <propeeers_user_jwt>
-X-Api-Version: 2025-05
-```
-
-### Endpoint map
-
-| Node | Method | Endpoint |
-|---|---|---|
-| Profile Analyzer | `POST` | `/profile/analyze` |
-| Video Transcription | `POST` | `/video/transcribe` |
-| Script Generator | `POST` | `/content/script` |
-| Translation | `POST` | `/content/translate` |
-| SEO Caption | `POST` | `/content/caption` |
-| Hot Topics | `GET` | `/discover/topics` |
-| Trending Hashtags | `POST` | `/discover/hashtags` |
-| Competitor Analysis | `POST` | `/competitor/analyze` |
-
-### Example: profile analyze request
-
-```bash
-curl -X POST https://api.propeers.in/v1/agent/profile/analyze \
-  -H "Authorization: Bearer <token>" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "platform": "instagram",
-    "handle": "@propeersindia",
-    "date_range_days": 30
-  }'
-```
 
 ### Example: full pipeline trigger
 
@@ -630,108 +536,11 @@ curl -X POST https://api.propeers.in/v1/agent/pipeline/full \
   }'
 ```
 
----
-
-## Environment Variables
-
-```env
-# Azure OpenAI
-AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
-AZURE_OPENAI_API_KEY=your_key_here
-AZURE_OPENAI_DEPLOYMENT_GPT4O=gpt-4o
-AZURE_OPENAI_DEPLOYMENT_MINI=gpt-4o-mini
-AZURE_OPENAI_DEPLOYMENT_WHISPER=whisper
-
-# Apify
-APIFY_API_TOKEN=your_apify_token
-
-# Bing Search
-BING_SEARCH_API_KEY=your_bing_key
-BING_SEARCH_ENDPOINT=https://api.bing.microsoft.com/v7.0
-
-# Azure Storage
-AZURE_BLOB_CONNECTION_STRING=DefaultEndpointsProtocol=https;...
-AZURE_BLOB_CONTAINER_MEDIA=media-temp
-
-# Azure Cosmos DB
-COSMOS_ENDPOINT=https://your-account.documents.azure.com:443
-COSMOS_KEY=your_cosmos_key
-COSMOS_DATABASE=propeers
-COSMOS_CONTAINER_LOOKUPS=lookups
-
-# Azure Cache for Redis
-REDIS_CONNECTION_STRING=your-cache.redis.cache.windows.net:6380,password=...
-
-# Azure AI Search
-AZURE_SEARCH_ENDPOINT=https://your-search.search.windows.net
-AZURE_SEARCH_API_KEY=your_search_key
-AZURE_SEARCH_INDEX=topics-index
-
-# Durable Functions Storage
-DURABLE_TASK_HUB_NAME=PropeersPipeline
-AzureWebJobsStorage=DefaultEndpointsProtocol=https;...
-```
-
-> **Never commit secrets to git.** All values above should be stored in **Azure Key Vault** and referenced via managed identity in production.
-
----
-
-## Deployment
-
-### Prerequisites
-
-- Azure CLI installed and logged in
-- Node.js 20+ (for Azure Functions)
-- Docker (for Container Apps + ACI jobs)
-- Apify account with Starter plan ($29/mo minimum)
-- Azure subscription with OpenAI access approved
-
-### Quick start
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/your-org/social-media-ai-agent.git
-cd social-media-ai-agent
-
-# 2. Create Azure resources
-az group create --name propeers-rg --location eastus
-az deployment group create \
-  --resource-group propeers-rg \
-  --template-file infra/main.bicep \
-  --parameters @infra/parameters.prod.json
-
-# 3. Deploy Durable Functions orchestrator
-cd src/orchestrator
-func azure functionapp publish propeers-orchestrator
-
-# 4. Build and push Container Apps
-az acr build --registry propeerscr --image nodes/profile-analyzer:latest ./nodes/profile-analyzer
-az containerapp update --name profile-analyzer --resource-group propeers-rg \
-  --image propeerscr.azurecr.io/nodes/profile-analyzer:latest
-
-# 5. Set secrets in Key Vault (never in env files)
-az keyvault secret set --vault-name propeers-kv --name ApifyToken --value "your_token"
-az keyvault secret set --vault-name propeers-kv --name AzureOpenAiKey --value "your_key"
-```
-
-### Recommended node deployment order
-
-1. Profile Analyzer (core — everything depends on it)
-2. Video Transcription (independent)
-3. Hot Topics (independent, uses Bing)
-4. Trending Hashtags (light dependency on topics)
-5. Script Generator (depends on transcription output)
-6. SEO Caption Generator (depends on script)
-7. Translation (wraps all other nodes)
-8. Competitor Analysis (depends on Profile Analyzer × N)
-
----
-
 ## Node Dependency Graph
 
 ```
                     ┌──────────────────┐
-                    │  Profile Analyzer │
+                    │ Profile Analyzer │
                     └────────┬─────────┘
                              │
               ┌──────────────┼──────────────┐
@@ -742,15 +551,15 @@ az keyvault secret set --vault-name propeers-kv --name AzureOpenAiKey --value "y
            │               │
            ▼               ▼
     ┌─────────────┐  ┌────────────┐
-    │Script Generator│  │Trending    │
-    │             │  │Hashtags    │
+    │   Script    │  │ Trending   │
+    │             │  │ Hashtags   │
     └──────┬──────┘  └────────────┘
            │
     ┌──────┴────────┐
     ▼               ▼
 ┌────────┐   ┌──────────────┐
-│Translate│   │SEO Caption   │
-│ Node   │   │Generator     │
+│Translate│  │ SEO Caption  │
+│ Node   │   │ Generator    │
 └────────┘   └──────────────┘
 ```
 
@@ -763,14 +572,4 @@ az keyvault secret set --vault-name propeers-kv --name AzureOpenAiKey --value "y
 - **Instagram private profiles** cannot be scraped — public only
 - **Apify rate limits** apply — concurrent actor runs limited by plan
 - **Whisper accuracy** drops below ~80% for heavy regional accents or music-heavy audio
-- **Hot Topics** data has ~15-minute latency from Bing API
 
----
-
-## License
-
-MIT — see [LICENSE](./LICENSE)
-
----
-
-*Built for ProPeers · Architecture version 1.0 · May 2025*
